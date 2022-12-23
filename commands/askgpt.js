@@ -13,7 +13,8 @@ module.exports = {
         } catch (error) {
             console.error(error);
             await message.reply({
-                content: "I couldn't handle your message. Try again later.",
+                content:
+                    "I couldn't handle your message. I can only respond to one person at a time, and there's a limit on the number of requests I can handle in an hour. Please try again later (sorry!)",
                 ephemeral: true,
             });
             return;
