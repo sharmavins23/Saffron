@@ -7,6 +7,10 @@ const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
+// ===== OpenAI handling =======================================================
+
+// ===== Command handling ======================================================
+
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
@@ -50,6 +54,8 @@ for (const file of slashCommandFiles) {
         );
     }
 }
+
+// ===== Event handling ========================================================
 
 const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs.readdirSync(eventsPath).filter((file) => {
