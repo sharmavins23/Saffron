@@ -3,16 +3,16 @@ module.exports = {
     description: "Talk to ChatGPT.",
     owner: false,
     usage: "`askgpt <message>`",
-    async execute(message, messageObj) {
+    async execute(content, message) {
         // Hopefully this lets Discord know we're trying...
-        messageObj.channel.sendTyping();
+        message.channel.sendTyping();
 
         let result;
         try {
-            result = await messageObj.client.openAIAPI.sendMessage(message);
+            result = await message.client.openAIAPI.sendMessage(content);
         } catch (error) {
             console.error(error);
-            await messageObj.reply({
+            await message.reply({
                 content: "I couldn't handle your message. Try again later.",
                 ephemeral: true,
             });
@@ -25,6 +25,6 @@ module.exports = {
             result.response += "...";
         }
 
-        messageObj.reply(result.response);
+        message.reply(result.response);
     },
 };
