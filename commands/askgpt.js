@@ -18,6 +18,13 @@ module.exports = {
             });
             return;
         }
+
+        // Limit the response to 2000 characters
+        if (result.response.length > 2000) {
+            result.response = result.response.slice(0, 1997);
+            result.response += "...";
+        }
+
         messageObj.reply(result.response);
     },
 };
