@@ -9,9 +9,20 @@ module.exports = {
         if (!message.mentions.has(message.client.user)) return;
 
         // Strip the message of the mention at the start
-        let content = message.content.slice(
-            message.mentions.users.first().toString().length + 1
-        );
+        let content;
+        try {
+            content = message.content.slice(
+                message.mentions.users.first().toString().length + 1
+            );
+        } catch (error) {
+            console.error(error);
+            await message.reply({
+                content: `Some internal error happened when you tried to use the bot. Please try again later.`,
+                ephemeral: true,
+            });
+
+            return;
+        }
         // Get the first word of the message to find the command
         let commandName = content.split(" ")[0];
         commandName = commandName.toLowerCase();
@@ -22,7 +33,7 @@ module.exports = {
         const command = message.client.commands.get(commandName);
 
         if (!command) {
-            console.error(`No command matching ${commandName} was found.`);
+            console.error(`No command matching "${commandName}" was found.`);
             await message.reply({
                 content: `I don't know that command!`,
                 ephemeral: true,

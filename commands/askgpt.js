@@ -8,6 +8,6 @@ module.exports = {
         messageObj.channel.sendTyping();
 
         const result = await messageObj.client.openAIAPI.sendMessage(message);
-        messageObj.channel.reply(result);
+        messageObj.reply(result.response);
     },
 };

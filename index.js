@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const ChatGPT = import("chatgpt");
 require("dotenv").config();
 
 const client = new Client({
@@ -8,6 +9,19 @@ const client = new Client({
 });
 
 // ===== OpenAI handling =======================================================
+
+async function setupChatGPTAPI() {
+    // Use Puppeteer to bypass Cloudflare
+    client.openAIAPI = new (await ChatGPT).ChatGPTAPIBrowser({
+        email: process.env.OPENAI_EMAIL,
+        password: process.env.OPENAI_PASSWORD,
+        isGoogleLogin: true,
+    });
+
+    await client.openAIAPI.initSession();
+}
+
+setupChatGPTAPI();
 
 // ===== Command handling ======================================================
 
