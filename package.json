@@ -1,0 +1,17 @@
+{
+    "name": "saffron",
+    "version": "1.0.0",
+    "description": "Saffron is a Discord bot designed for some various commands, most notably interacting with ChatGPT on an individual level.",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node --harmony ."
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "chatgpt": "^3.3.2",
+        "discord.js": "^14.7.1",
+        "dotenv": "^16.0.3"
+    }
+}
