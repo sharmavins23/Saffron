@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
-const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
+const { Client, Collection, GatewayIntentBits } = require("discord.js");
 require("dotenv").config();
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds],
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
 client.commands = new Collection();
@@ -17,8 +17,14 @@ const commandFiles = fs.readdirSync(commandsPath).filter((file) => {
 for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
-    if ("data" in command && "execute" in command) {
-        client.commands.set(command.data.name, command);
+    if (
+        "name" in command &&
+        "description" in command &&
+        "owner" in command &&
+        "usage" in command &&
+        "execute" in command
+    ) {
+        client.commands.set(command.name, command);
     } else {
         console.log(
             `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
@@ -26,33 +32,42 @@ for (const file of commandFiles) {
     }
 }
 
-client.once(Events.ClientReady, (bot) => {
-    console.log(`Ready! Logged in as ${bot.user.tag}!`);
+client.slashCommands = new Collection();
+
+const slashCommandsPath = path.join(__dirname, "commands/commands");
+const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter((file) => {
+    return file.endsWith(".js");
 });
 
-client.on(Events.InteractionCreate, async (interaction) => {
-    if (!interaction.isCommand()) return;
-
-    const command = interaction.client.commands.get(interaction.commandName);
-
-    if (!command) {
-        console.error(
-            `No command matching ${interaction.commandName} was found.`
+for (const file of slashCommandFiles) {
+    const filePath = path.join(slashCommandsPath, file);
+    const command = require(filePath);
+    if ("data" in command && "execute" in command) {
+        client.slashCommands.set(command.data.name, command);
+    } else {
+        console.log(
+            `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
         );
-        await interaction.reply(`I don't know that command!`);
-
-        return;
     }
+}
 
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        await interaction.reply({
-            content: "There was an error while executing this command!",
-            ephemeral: true,
+const eventsPath = path.join(__dirname, "events");
+const eventFiles = fs.readdirSync(eventsPath).filter((file) => {
+    return file.endsWith(".js");
+});
+
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => {
+            event.execute(...args);
+        });
+    } else {
+        client.on(event.name, (...args) => {
+            event.execute(...args);
         });
     }
-});
+}
 
 client.login(process.env.DISCORD_BOT_TOKEN);

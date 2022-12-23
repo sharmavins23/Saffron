@@ -39,7 +39,7 @@ const redeploy = async (guildID) => {
 };
 
 const guilds = [
-    process.env.DISCORD_FRIENDS_SERVER_ID,
+    // process.env.DISCORD_FRIENDS_SERVER_ID,
     process.env.DISCORD_TESTING_SERVER_ID,
 ];
 
