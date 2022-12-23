@@ -16,7 +16,7 @@ const rest = new REST({ version: "10" }).setToken(
     process.env.DISCORD_BOT_TOKEN
 );
 
-(async () => {
+const redeploy = async (guildID) => {
     try {
         console.log(
             `Started refreshing ${commands.length} application (/) commands.`
@@ -25,7 +25,7 @@ const rest = new REST({ version: "10" }).setToken(
         const data = await rest.put(
             Routes.applicationGuildCommands(
                 process.env.DISCORD_BOT_CLIENT_ID,
-                process.env.DISCORD_TESTING_SERVER_ID
+                guildID
             ),
             { body: commands }
         );
@@ -36,4 +36,13 @@ const rest = new REST({ version: "10" }).setToken(
     } catch (error) {
         console.error(error);
     }
-})();
+};
+
+const guilds = [
+    process.env.DISCORD_FRIENDS_SERVER_ID,
+    process.env.DISCORD_TESTING_SERVER_ID,
+];
+
+for (let guildID of guilds) {
+    redeploy(guildID);
+}

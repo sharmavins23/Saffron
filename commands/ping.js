@@ -8,6 +8,9 @@ module.exports = {
         // Compute the time difference between the response
         let timeDiff = Date.now() - interaction.createdTimestamp;
 
-        await interaction.reply(`Pong! It took me ${timeDiff} ms to respond.`);
+        await interaction.reply({
+            content: `Pong! It took me ${timeDiff} ms to respond.`,
+            ephemeral: true,
+        });
     },
 };
